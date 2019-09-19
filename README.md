@@ -20,6 +20,8 @@ The body of the email can be formatted however you like. It should contain a rea
     1. Needs to get current and tomorrow's weather for their location from: free Weatherbit.io API, OpenWeatherMap API, or Dark Sky API
     2. Subject:
         1. Nice out (sunny or 5 degrees warmer than tomorrow's forecasted temp): "It's nice out! Enjoy a discount on us."
-        2.
-    3. Body: 
+        2. Not Nice out (percipitating or 5 degrees cooler than tomorrow): "Not so nice out? That's okay, enjoy a discount on us."
+        3. Otherwise "Enjoy a discount on us."
+    3. Body: contain a readable version of the recipient's location along with the current temperature and weather. For example, "55 degrees, sunny." (For extra flair, you could include an image or animated GIF of the current weather.)
+    4. Should come from my email and go to theirs.
     

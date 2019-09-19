@@ -1,0 +1,4 @@
+{"password": "purplerain7",
+ "port": 5432,
+ "server_name": "weather_app",
+ "user": "postgres"}
