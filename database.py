@@ -10,20 +10,20 @@ def grab_data():
     with open('config.json', 'r') as infile:
         data = json.load(infile)
 
-    DATABASE_URI = f"postgres+psycopg2://postgres:{data['password']}@localhost:{data['port']}/{data['server_name']}"
+    DATABASE_URI = f"postgres+psycopg2://postgres:{data['database_password']}@localhost:{data['port']}/{data['server_name']}"
 
     return data, DATABASE_URI
 
 def create_database():
     con = psycopg2.connect(dbname='postgres',
-                           user=data['user'], host='',
-                           password=data['password'])
+                           user=data['database_user'], host='',
+                           password=data['database_password'])
     con.autocommit = True
     cur = con.cursor()
     try:
         cur.execute(f""" CREATE DATABASE weather_app
                         WITH 
-                        OWNER = {data['user']}
+                        OWNER = {data['database_user']}
                         ENCODING = 'UTF8'
                         CONNECTION LIMIT = -1;"""
                 )

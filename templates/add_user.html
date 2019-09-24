@@ -1,34 +1,27 @@
 <head>
-<link href="//code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" rel="Stylesheet"></link>
-<script src="//code.jquery.com/jquery-2.2.0.min.js"></script>
-<script src="//code.jquery.com/ui/1.10.2/jquery-ui.js" ></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
 
-<script type="text/javascript">
-$(function() {
-    $("#autocomplete").autocomplete({
-        source:function(request, response) {
-            $.getJSON("{{url_for('autocomplete')}}",{
-                q: request.term, // in flask, "q" will be the argument to look for using request.args
-            }, function(data) {
-                response(data.matching_results); // matching_results from jsonify
-            });
-        },
-        minLength: 2,
-        select: function(event, ui) {
-            console.log(ui.item.value); // not in your question, but might help later
-        }
-    });
-})
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
 
-</script>
+
 
 <form method="POST">
     <div>
         Please enter your email Here: <input name="text">
         <br>
         <br>
-        Please enter your city Here: <input name="autocomplete" type="text" id="autocomplete"
-                                            class="form-control input-lg">
+        Please enter your city Here: <select class="selectpicker" data-live-search="true" name="city">
+            {% for city in cities %}
+            <option value= "{{city}}" SELECTED>{{city}}</option>"
+            {% endfor %}
+            </select>
         <input type="submit">
     </div>
 </form>
+
+
+
+
