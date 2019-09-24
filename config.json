@@ -1,4 +1,5 @@
-{"password": "purplerain7",
+{"password": "password",
  "port": 5432,
  "server_name": "weather_app",
- "user": "postgres"}
+ "user": "postgres",
+ "weather_api_key": "enter_weather_api_key"}
