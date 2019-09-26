@@ -6,51 +6,72 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 
+class Database:
+    def __init__(self, config_file='config.json'):
+        self.config_file = config_file
+        self.data = None
+        self.DATABASE_URI = None
+        self.engine = None
+        self.Session = None
 
-def grab_data():
-    with open('config.json', 'r') as infile:
-        data = json.load(infile)
+        self.grab_data()
+        self.get_session()
 
-    DATABASE_URI = f"postgres+psycopg2://postgres:{data['database_password']}@localhost:{data['port']}/{data['server_name']}"
+    def grab_data(self):
+        with open('config.json', 'r') as infile:
+            self.data = json.load(infile)
 
-    return data, DATABASE_URI
+        self.DATABASE_URI = f"postgres+psycopg2://postgres:{self.data['database_password']}"+\
+                       f"@localhost:{self.data['port']}/{self.data['server_name']}"
 
+    def get_session(self):
+        self.engine = create_engine(self.DATABASE_URI)
+        self.Session = sessionmaker(bind=self.engine)
 
-def create_database():
-    con = psycopg2.connect(user=data['database_user'], host='',
-                           password=data['database_password'])
-    con.autocommit = True
-    cur = con.cursor()
+    def create_database(self):
+        con = psycopg2.connect(user=self.data['database_user'], host='',
+                               password=self.data['database_password'])
+        con.autocommit = True
+        cur = con.cursor()
 
-    try:
-        cur.execute(f""" CREATE DATABASE weather_app
-                        WITH 
-                        OWNER = {data['database_user']}
-                        ENCODING = 'UTF8'
-                        CONNECTION LIMIT = -1;"""
-                    )
+        try:
+            cur.execute(f""" CREATE DATABASE weather_app
+                             WITH 
+                             OWNER = {self.data['database_user']}
+                             ENCODING = 'UTF8'
+                             CONNECTION LIMIT = -1;"""
+                        )
 
-    except psycopg2.errors.DuplicateDatabase:
-        print('Duplicate Database, passing')
+        except psycopg2.errors.DuplicateDatabase:
+            print('Duplicate Database, passing')
 
+    def create_table(self):
+        con = psycopg2.connect(dbname='weather_app',
+                               user=self.data['database_user'],
+                               host='',
+                               password=self.data['database_password'])
+        con.autocommit = True
+        cur = con.cursor()
 
-def create_table():
-    con = psycopg2.connect(dbname='weather_app',
-                           user=data['database_user'],
-                           host='',
-                           password=data['database_password'])
-    con.autocommit = True
-    cur = con.cursor()
+        try:
+            cur.execute("""CREATE TABLE recipients(
+                           id serial PRIMARY KEY,
+                           email TEXT UNIQUE,
+                           city TEXT,
+                           name TEXT
+                           );""")
+        except psycopg2.errors.DuplicateTable:
+            print('Duplicate Table, passing')
 
-    try:
-        cur.execute("""CREATE TABLE recipients(
-                       id serial PRIMARY KEY,
-                       email TEXT UNIQUE,
-                       city TEXT,
-                       name TEXT
-                       );""")
-    except psycopg2.errors.DuplicateTable:
-        print('Duplicate Table, passing')
+    def add_email(self, email, location, name=''):
+        session = self.Session()
+        recipient = Recipient(email=email,
+                              city=location,
+                              name=name
+                              )
+        session.add(recipient)
+        session.commit()
+        session.close()
 
 class Recipient(declarative_base()):
 
@@ -70,24 +91,7 @@ class Recipient(declarative_base()):
                                                                 self.city,
                                                                 self.name)
 
-
-def get_session(DATABASE_URI):
-    engine = create_engine(DATABASE_URI)
-    Session = sessionmaker(bind=engine)
-    return engine, Session
-
-
-def add_email(Session, email, location, name=''):
-    session = Session()
-    recipient = Recipient(email=email,
-                          city=location,
-                          name=name
-                          )
-    session.add(recipient)
-    session.commit()
-    session.close()
-
 if __name__ == "__main__":
-    data, DATABASE_URI = grab_data()
-    create_database()
-    create_table()
+    database = Database('config.json')
+    database.create_database()
+    database.create_table()
