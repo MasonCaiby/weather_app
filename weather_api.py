@@ -1,7 +1,7 @@
 from database import grab_data
 import smtplib
 import requests
-
+import psycopg2
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -35,7 +35,8 @@ def get_prediction(city, api_key):
 
     return body, subject
 
-def email(from_email, password, to_email, body, subject, img=False):
+
+def send_email(from_email, password, to_email, body, subject, img=False):
     msg = MIMEMultipart()
     msg['Subject'] = subject
     msg['From'] = from_email
@@ -52,7 +53,32 @@ def email(from_email, password, to_email, body, subject, img=False):
     server.close()
 
 
+def email_blast(data):
+    con = psycopg2.connect(dbname='weather_app',
+                           user=data['database_user'],
+                           host='',
+                           password=data['database_password'])
+
+    cur = con.cursor()
+    cur.execute("""Select distinct(city) from recipients;""")
+    cities = cur.fetchall()
+
+    for city in cities:
+        city = city[0]
+        body, subject = get_prediction(city, data['weather_api_key'])
+
+        email_query = f"Select email from recipients where city = '{city}';"
+        cur.execute(email_query)
+        emails = cur.fetchall()
+        for email in emails:
+            email = email[0]
+
+            try:
+                send_email(data['from_email'], data['email_password'], email, body, subject)
+            except smtplib.SMTPRecipientsRefused:
+                print(f'{email} is not a valid email')
+
+
 if __name__ == "__main__":
     data, DATABASE_URI = grab_data()
-    body, subject = get_prediction('Raleigh,NC', data['weather_api_key'])
-    email(data['from_email'], data['email_password'], "maxwell.caudle@gmail.com", body, subject)
+    email_blast(data)

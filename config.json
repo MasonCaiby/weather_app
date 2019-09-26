@@ -1,7 +1,7 @@
-{"database_password": "password",
+{"database_password": "    ",
  "port": 5432,
  "server_name": "weather_app",
  "database_user": "postgres",
- "weather_api_key": "",
- "from_email":  "",
- "email_password":  ""}
+ "weather_api_key": "df2eabf611274b019ad8d0641d7da015",
+ "from_email":  "klaviyo.weather.max.caudle@gmail.com",
+ "email_password":  "password4klaviyo"}
