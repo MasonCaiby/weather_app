@@ -45,7 +45,7 @@ def create_table():
     try:
         cur.execute("""CREATE TABLE recipients(
                        id serial PRIMARY KEY,
-                       email TEXT,
+                       email TEXT UNIQUE,
                        city TEXT,
                        name TEXT
                        );""")
