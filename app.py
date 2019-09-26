@@ -23,16 +23,16 @@ def my_form_post():
         if (re.search(email_regex, email)) and city:
             try:
                 database.add_email(email, city)
-                flash_message = f"User Added\nWith email {email}\nAnd City {city}"
-                flash(f'<SCRIPT>alert({flash_message})</SCRIPT>')
+                flash(f'<SCRIPT>alert("User Added With Email: {email} City: {city}")</SCRIPT>')
                 return render_template('add_user.html', cities=cities)
 
             except sqlalchemy.exc.IntegrityError:
-                flash_message = f"User: {email} Already Exists."
-                flash(f'<SCRIPT>alert({flash_message})</SCRIPT>')
+                print('duplicate')
+                flash(f'<SCRIPT>alert("User: {email} Already Exists.")</SCRIPT>')
                 return render_template('add_user.html', cities=cities)
 
         else:
+            print('not enough info')
             flash('<SCRIPT>alert("Please enter a valid Email and City.")</SCRIPT>')
             return render_template('add_user.html', cities=cities)
 
