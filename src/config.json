@@ -1,0 +1,8 @@
+{"database_password": "",
+ "port": 5432,
+ "server_name": "weather_app",
+ "database_user": "postgres",
+ "weather_api_key": "",
+ "from_email":  "",
+ "email_password":  "",
+ "giphy_api_key":  ""}
