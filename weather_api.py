@@ -1,6 +1,6 @@
-import sys
-from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+# import sys
+# from os import path
+# sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
 
 from database import Database
 import smtplib
@@ -15,7 +15,7 @@ def get_prediction(city, api_key):
     # code: 800 or 801 == good
     # code: 200-624 or 900 == bad
 
-    get_url = f"https://api.weatherbit.io/v2.0/current?city={city}&key={api_key}"
+    get_url = f"https://api.weatherbit.io/v2.0/current?city={city}&key={api_key}&units=i"
     current_weather = requests.get(get_url).json().get('data')[0]
     current_temp = current_weather.get('temp')
     current_code = int(current_weather.get('weather').get('code'))
@@ -23,7 +23,7 @@ def get_prediction(city, api_key):
 
     body = f"It is currently {current_temp} degrees C outside and {current_weather} in {city}."
 
-    forecast_url = f"https://api.weatherbit.io/v2.0/forecast/hourly?city={city}&key={api_key}&hours=24"
+    forecast_url = f"https://api.weatherbit.io/v2.0/forecast/hourly?city={city}&key={api_key}&hours=24&units=i"
     forecast = requests.get(forecast_url).json()['data']
     next_day = forecast[-1]
     tomorrow_temp = next_day['temp']

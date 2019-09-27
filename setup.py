@@ -10,6 +10,6 @@ setuptools.setup(
     url="https://github.com/MasonCaiby/weather_app",
     packages = ['emailer'],
     entry_points = {
-        'console_scripts': ['email_blast=emailer.__main__:main'],
+        'console_scripts': ['email_blast=__main__:main'],
     },
 )

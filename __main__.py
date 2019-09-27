@@ -1,10 +1,6 @@
-import sys
-from os import path
-sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
-
 import argparse
 from database import Database
-from .weather_api import email_blast
+from weather_api import email_blast
 
 
 def main():
@@ -14,3 +10,7 @@ def main():
 
     database = Database()
     email_blast(database)
+
+
+if __name__ == '__main__':
+    main()
