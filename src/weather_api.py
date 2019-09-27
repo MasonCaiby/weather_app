@@ -1,8 +1,5 @@
-# import sys
-# from os import path
-# sys.path.append(path.dirname(path.abspath(__file__)))
-
-from .database import Database
+from database import Database
+from giphy import get_gif
 import smtplib
 import requests
 import psycopg2
@@ -21,7 +18,7 @@ def get_prediction(city, api_key):
     current_code = int(current_weather.get('weather').get('code'))
     current_weather = current_weather.get('weather').get('description')
 
-    body = f"It is currently {current_temp} degrees F outside and {current_weather} in {city}."
+    body = f'It is currently {current_temp} degrees F outside and {current_weather} in {city}. '
 
     forecast_url = f"https://api.weatherbit.io/v2.0/forecast/hourly?city={city}&key={api_key}&hours=24&units=i"
     forecast = requests.get(forecast_url).json()['data']
@@ -39,7 +36,7 @@ def get_prediction(city, api_key):
     else:
         subject = "Enjoy a discount on us."
 
-    return body, subject
+    return body, subject, current_weather
 
 
 def send_email(from_email, password, to_email, msg):
@@ -60,6 +57,7 @@ def build_msg(from_email, body, subject, img=False):
     msg['From'] = from_email
     msg_html = MIMEText(body, 'html')
     msg.attach(msg_html)
+
 
     if img:
         with open(img, 'rb') as img_open:
@@ -84,16 +82,16 @@ def email_blast(database):
 
     for city in cities:
         city = city[0]
-        body, subject = get_prediction(city, database.data['weather_api_key'])
+        body, subject, current_weather = get_prediction(city, database.data['weather_api_key'])
 
         email_query = f"Select email from recipients where city = '{city}';"
         cur.execute(email_query)
         emails = cur.fetchall()
+        get_gif(database.data, current_weather)
 
+        msg = build_msg(database.data['from_email'], body, subject, img="myfile1.gif")
         for email in emails:
             email = email[0]
-
-            msg = build_msg(database.data['from_email'], body, subject, img=False)
 
             try:
                 send_email(database.data['from_email'], database.data['email_password'], email, msg)

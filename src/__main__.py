@@ -1,6 +1,9 @@
 import argparse
-from .database import Database
-from .weather_api import email_blast
+import os, sys
+sys.path.append(os.path.dirname(__file__))
+
+from database import Database
+from weather_api import email_blast
 
 
 def main():
