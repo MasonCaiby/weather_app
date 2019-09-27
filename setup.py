@@ -1,3 +1,5 @@
+""" Pretty standard setup.py file, I think"""
+
 import setuptools
 
 setuptools.setup(
@@ -10,7 +12,7 @@ setuptools.setup(
     url="https://github.com/MasonCaiby/weather_app",
     packages=['src'],
     package_data={
-        'src': ['*']
+        'src': ['*'] # want to make sure we grabe the config file and cities file
     }
     ,
     entry_points = {
