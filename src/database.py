@@ -1,4 +1,5 @@
 # Scheme: "postgres+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
+import os
 import json
 import psycopg2
 from sqlalchemy import create_engine
@@ -8,7 +9,7 @@ from sqlalchemy import Column, Integer, String
 
 
 class Database:
-    def __init__(self, config_file='config.json'):
+    def __init__(self, config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.json')):
         self.config_file = config_file
 
         self.grab_data()
@@ -91,6 +92,7 @@ class Recipient(declarative_base()):
 
 
 if __name__ == "__main__":
+    print(os.path.dirname(os.path.realpath(__file__)))
     database = Database()
     database.create_database()
     database.create_table()

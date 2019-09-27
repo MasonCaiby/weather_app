@@ -1,8 +1,8 @@
 # import sys
 # from os import path
-# sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+# sys.path.append(path.dirname(path.abspath(__file__)))
 
-from database import Database
+from .database import Database
 import smtplib
 import requests
 import psycopg2
@@ -21,7 +21,7 @@ def get_prediction(city, api_key):
     current_code = int(current_weather.get('weather').get('code'))
     current_weather = current_weather.get('weather').get('description')
 
-    body = f"It is currently {current_temp} degrees C outside and {current_weather} in {city}."
+    body = f"It is currently {current_temp} degrees F outside and {current_weather} in {city}."
 
     forecast_url = f"https://api.weatherbit.io/v2.0/forecast/hourly?city={city}&key={api_key}&hours=24&units=i"
     forecast = requests.get(forecast_url).json()['data']
@@ -39,7 +39,6 @@ def get_prediction(city, api_key):
     else:
         subject = "Enjoy a discount on us."
 
-    print(subject)
     return body, subject
 
 

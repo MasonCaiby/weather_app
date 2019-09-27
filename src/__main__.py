@@ -1,6 +1,6 @@
 import argparse
-from database import Database
-from weather_api import email_blast
+from .database import Database
+from .weather_api import email_blast
 
 
 def main():

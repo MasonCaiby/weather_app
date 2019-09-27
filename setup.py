@@ -8,8 +8,12 @@ setuptools.setup(
     description="A tool to send emails based on local weather to users.",
 
     url="https://github.com/MasonCaiby/weather_app",
-    packages = ['emailer'],
+    packages=['src'],
+    package_data={
+        'src': ['*']
+    }
+    ,
     entry_points = {
-        'console_scripts': ['email_blast=__main__:main'],
+        'console_scripts': ['email_blast=src.__main__:main'],
     },
 )
