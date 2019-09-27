@@ -25,7 +25,7 @@ def get_prediction(city, api_key):
     next_day = forecast[-1]
     tomorrow_temp = next_day['temp']
 
-    print(f"current_temp: {current_temp}, current_code: {current_code}, tomorrow_temp: {tomorrow_temp}")
+    #print(f"current_temp: {current_temp}, current_code: {current_code}, tomorrow_temp: {tomorrow_temp}")
 
     if (current_temp - tomorrow_temp >= 5) or (current_code == 800) or (current_code==801):
         subject = "It's nice out! Enjoy a discount on us."
@@ -87,9 +87,14 @@ def email_blast(database):
         email_query = f"Select email from recipients where city = '{city}';"
         cur.execute(email_query)
         emails = cur.fetchall()
-        get_gif(database.data, current_weather)
 
-        msg = build_msg(database.data['from_email'], body, subject, img="myfile1.gif")
+        if database.data.get('giphy_api_key'):
+            file = get_gif(database.data, current_weather)
+            msg = build_msg(database.data['from_email'], body, subject, img=file)
+
+        else:
+            msg = build_msg(database.data['from_email'], body, subject)
+
         for email in emails:
             email = email[0]
 
