@@ -42,5 +42,17 @@ tangentially related at best. But, that just makes the whole newsletter a bit mo
 
 ## Instillation etc.
 
-1. Requirements
-2. 
+### Requirements
+This package has a few required packages that you'll have to install before everything runs properly.
+1. `sqlalchemy`
+2. `psycopg2` version 2.8+
+3. `requests`
+4. `flask`
+### Setup
+Getting everything to run for Weather App is relatively straight forward
+1. Fill out the `config.json` file. If you don't want to use `Giphy`, you can simply delete that line
+2. From the main directory of this package (e.g. above `src`) run `python src/database.py` to initialize the database and table Weather App will use to store the user information in. If you already have a database and table setup, no worries; Weather App will just double check for you. 
+3. From the main directory of this package (e.g. above `src`) run `python src/app.py` to start running the web app to collect user information. Please note: this is just a flask web app, and currently cannot be accessed outside of your personal computer.
+4. From the main directory of this package (e.g. above `src`) run `pip install .` to install the `email_blast` package
+5. At a time of your choosing, run `email_blast` from the command line to send an email to all users in the database.
+
