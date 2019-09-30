@@ -56,3 +56,9 @@ Getting everything to run for Weather App is relatively straight forward
 4. From the main directory of this package (e.g. above `src`) run `pip install .` to install the `email_blast` package
 5. At a time of your choosing, run `email_blast` from the command line to send an email to all users in the database.
 
+### Testing
+Weather App includes some automated testing.
+1. Move to the `src` directory with `cd src`
+2. Run `python tests.py` to execute all 11 tests.
+3. If you run into any issues with testing, email `klaviyo.weather.max.caudle@gmail.com`.
+
