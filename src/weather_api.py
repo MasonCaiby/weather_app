@@ -30,8 +30,12 @@ def get_prediction(city, api_key):
     next_day = forecast[-1] # I get 24 hours of forecast data, then get the last one in the list, so 24 hours later
     tomorrow_temp = next_day['temp']
 
-    #print(f"current_temp: {current_temp}, current_code: {current_code}, tomorrow_temp: {tomorrow_temp}")
+    subject = make_subject(current_temp, tomorrow_temp, current_code)
 
+    return body, subject, current_weather
+
+
+def make_subject(current_temp, tomorrow_temp, current_code):
     if (current_temp - tomorrow_temp >= 5) or (current_code == 800) or (current_code==801):
         subject = "It's nice out! Enjoy a discount on us."
     elif (current_temp - tomorrow_temp <= -5) or (200 <= current_code <= 624) or (current_code==900):
@@ -39,7 +43,7 @@ def get_prediction(city, api_key):
     else:
         subject = "Enjoy a discount on us."
 
-    return body, subject, current_weather
+    return subject
 
 
 def send_email(from_email, password, to_email, msg):

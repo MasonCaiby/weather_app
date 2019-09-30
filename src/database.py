@@ -10,7 +10,7 @@ class Database:
     """ A class to handle all interactions with a Database. It takes an optional config_file location,
         in case you want to save your config elsewhere."""
 
-    def __init__(self, config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.json')):
+    def __init__(self, config_file=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'config.json')):
         self.config_file = config_file
 
         self.grab_data()
@@ -23,7 +23,7 @@ class Database:
             self.data = json.load(infile)
 
         # Scheme: "postgres+psycopg2://<USERNAME>:<PASSWORD>@<IP_ADDRESS>:<PORT>/<DATABASE_NAME>"
-        self.DATABASE_URI = f"postgres+psycopg2://postgres:{self.data['database_password']}"+\
+        self.DATABASE_URI = f"postgres+psycopg2://postgres:{self.data['database_password']}" + \
                             f"@localhost:{self.data['port']}/{self.data['server_name']}"
 
     def get_session(self):
@@ -32,16 +32,16 @@ class Database:
         self.engine = create_engine(self.DATABASE_URI)
         self.Session = sessionmaker(bind=self.engine)
 
-    def create_database(self):
+    def create_database(self, dbname, user, password, host=''):
         """ This will make a new database, to help with setup."""
 
-        con = psycopg2.connect(user=self.data['database_user'], host='',
-                               password=self.data['database_password'])
+        con = psycopg2.connect(user=user, host=host,
+                               password=password)
         con.autocommit = True
         cur = con.cursor()
 
         try:
-            cur.execute(f""" CREATE DATABASE weather_app
+            cur.execute(f""" CREATE DATABASE {dbname}
                             WITH 
                             OWNER = {self.data['database_user']}
                             ENCODING = 'UTF8'
@@ -51,19 +51,19 @@ class Database:
         except psycopg2.errors.DuplicateDatabase:
             print('Duplicate Database, passing')
 
-    def create_table(self):
+    def create_table(self, dbname, user, password, table_name, host=''):
         """ This safely makes the DB's only table, called weather_app. It takes an optional name parameter, in case we
             want to further customize the emails later."""
 
-        con = psycopg2.connect(dbname='weather_app',
-                               user=self.data['database_user'],
-                               host='',
-                               password=self.data['database_password'])
+        con = psycopg2.connect(dbname=dbname,
+                               user=user,
+                               host=host,
+                               password=password)
         con.autocommit = True
         cur = con.cursor()
 
         try:
-            cur.execute("""CREATE TABLE recipients(
+            cur.execute(f"""CREATE TABLE {table_name}(
                            id serial PRIMARY KEY,
                            email TEXT UNIQUE,
                            city TEXT,
@@ -84,6 +84,12 @@ class Database:
         session.commit()
         session.close()
 
+    def delete_email(self, email):
+        session = self.Session()
+        query = session.query(Recipient).filter(Recipient.email == email)
+        query.delete()
+        session.commit()
+
 
 class Recipient(declarative_base()):
     """ A class so we can add email recipients to the database."""
@@ -102,5 +108,11 @@ class Recipient(declarative_base()):
 
 if __name__ == "__main__":
     database = Database()
-    database.create_database()
-    database.create_table()
+    database.create_database(dbname='weather_app',
+                             user=database.data['database_user'],
+                             password=database.data['database_password'])
+
+    database.create_table(dbname='weather_app',
+                          user=database.data['database_user'],
+                          password=database.data['database_password'],
+                          table_name='recipients')
