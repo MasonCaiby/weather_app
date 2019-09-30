@@ -18,7 +18,7 @@ def my_form_post():
 
     # we only want to check for data if the user is POSTing
     if request.method == 'POST':
-        email = request.form.get('email')
+        email = request.form.get('email', '')
         city = request.form.get('city')
 
         flash(add_to_database(database, email, city))
@@ -26,7 +26,7 @@ def my_form_post():
     return render_template('add_user.html', cities=cities)
 
 
-def add_to_database(database, email, city):
+def add_to_database(email, city):
     email_regex = r'^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'  # I shamelessly stole this from the internet
 
     # make sure we have needed data, and that the email is syntatic-ally valid.

@@ -32,16 +32,17 @@ class Database:
         self.engine = create_engine(self.DATABASE_URI)
         self.Session = sessionmaker(bind=self.engine)
 
-    def create_database(self, dbname, user, password, host=''):
+    def create_database(self, dbname):
         """ This will make a new database, to help with setup."""
 
-        con = psycopg2.connect(user=user, host=host,
-                               password=password)
+        con = psycopg2.connect(user=self.data['database_user'],
+                               host='',
+                               password=self.data['database_password'])
         con.autocommit = True
         cur = con.cursor()
 
         try:
-            cur.execute(f""" CREATE DATABASE {dbname}
+            cur.execute(f"""CREATE DATABASE {dbname}
                             WITH 
                             OWNER = {self.data['database_user']}
                             ENCODING = 'UTF8'
@@ -51,14 +52,14 @@ class Database:
         except psycopg2.errors.DuplicateDatabase:
             print('Duplicate Database, passing')
 
-    def create_table(self, dbname, user, password, table_name, host=''):
+    def create_table(self, dbname, table_name):
         """ This safely makes the DB's only table, called weather_app. It takes an optional name parameter, in case we
             want to further customize the emails later."""
 
         con = psycopg2.connect(dbname=dbname,
-                               user=user,
-                               host=host,
-                               password=password)
+                               user=self.data['database_user'],
+                               host='',
+                               password=self.data['database_password'])
         con.autocommit = True
         cur = con.cursor()
 
@@ -108,11 +109,7 @@ class Recipient(declarative_base()):
 
 if __name__ == "__main__":
     database = Database()
-    database.create_database(dbname='weather_app',
-                             user=database.data['database_user'],
-                             password=database.data['database_password'])
+    database.create_database(dbname='weather_app')
 
     database.create_table(dbname='weather_app',
-                          user=database.data['database_user'],
-                          password=database.data['database_password'],
                           table_name='recipients')
