@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, flash
 import sqlalchemy
 import re
+
 from database import Database
+
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
