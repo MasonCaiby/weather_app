@@ -21,7 +21,7 @@ def my_form_post():
         email = request.form.get('email', '')
         city = request.form.get('city')
 
-        flash(add_to_database(database, email, city))
+        flash(add_to_database(email, city))
 
     return render_template('add_user.html', cities=cities)
 

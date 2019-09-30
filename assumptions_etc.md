@@ -18,4 +18,4 @@ unrelated to the query tags.
 
 
 Bonus things to add:
-2. Testing
+1. update readme.md
